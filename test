@@ -1,0 +1,55 @@
+echo "boot"
+read grub
+echo "swap"
+read swap
+echo "/"
+read slash
+echo "/home"
+read home
+echo "UserName"
+read username
+echo "passwd"
+read passwd
+echo "n
+p
+1
+
+$boot
+n
+p
+2
+
+$swap
+n
+p
+3
+
+$slash
+n
+p
+4
+
+$home
+w" | fdisk /dev/sda
+mkswap /dev/sda2
+swapon /dev/sda2
+mkfs.ext4 /dev/sda4
+mkfs.ext4 /dev/sda3
+mkfs.fat -F32 /dev/sda1
+mount /dev/sda3 /mnt
+mkdir /mnt/{boot,home}
+mount /dev/sda1 /mnt/boot
+mount /dev/sda4 /mnt/home
+pacstrap /mnt base base-devel emacs-nox git xorg xorg-utils xorg-xinit
+genfstab -U /mnt > /mnt/etc/fstab
+echo "en_US.UTG-8 UTF-8" >> /mnt/etc/locale.gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+echo "mkinitcpio -p linux
+pacman -S grub
+grub-install --rechech /dev/sda
+grub-mkconfig -o /boot/grub/grub.cfg
+useradd -m -g users -G wheel $UserName
+echo $passwd | passwd" > /mnt/test
+chmod +x /mnt/test
+arch-chroot /mnt /bin/sh
+reboot
