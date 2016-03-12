@@ -29,7 +29,7 @@ n
 p
 4
 
-+10G
+
 w" | fdisk /dev/sda
 mkswap /dev/sda2
 swapon /dev/sda2
