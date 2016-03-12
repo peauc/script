@@ -14,22 +14,22 @@ echo "n
 p
 1
 
-$boot
++512m
 n
 p
 2
 
-$swap
++2g
 n
 p
 3
 
-$slash
++5G
 n
 p
 4
 
-$home
++10G
 w" | fdisk /dev/sda
 mkswap /dev/sda2
 swapon /dev/sda2
@@ -43,14 +43,14 @@ mount /dev/sda4 /mnt/home
 pacstrap /mnt base base-devel emacs-nox git xorg xorg-utils xorg-xinit
 genfstab -U /mnt > /mnt/etc/fstab
 echo "en_US.UTG-8 UTF-8" >> /mnt/etc/locale.gen
+locale.gen
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 echo "mkinitcpio -p linux
 pacman -S grub
 grub-install --recheck /dev/sda
 grub-mkconfig -o /boot/grub/grub.cfg
-useradd -m -g users -G wheel $UserName -p $passwd
-echo $passwd | passwd
+useradd -m -g users -G wheel $UserName
 exit" > /mnt/chroot_script
 chmod +x /mnt/chroot_script
-chroot /mnt /bin/sh -c "su - -c ./chroot_script"
+chroot /mnt /bin/sh -c "su -c ./chroot_script"
 reboot
